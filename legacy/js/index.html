@@ -1,0 +1,71 @@
+<html>
+<head>
+	<title>Indíces de valores financiais</title>
+	<script type="text/javascript" src="xml2json.min.js"></script>
+	<script>
+		function requestService() {
+			return new Promise(function(resolve, reject) {
+				var body = `<?xml version="1.0" encoding="utf-8"?>
+					<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						<soapenv:Body>
+							<getValoresSeriesXML xmlns="https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS">
+								<codigosSeries>
+									<item>7845</item>
+									<item>433</item>
+								</codigosSeries>
+								<dataInicio>21/08/2016</dataInicio>
+								<dataFim>21/05/2017</dataFim>
+							</getValoresSeriesXML>
+						</soapenv:Body>
+					</soapenv:Envelope>`;
+				var xhr = new XMLHttpRequest();
+				// .Open "post", "https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS?method=getValor", False
+				// .setRequestHeader "Host", "https://www3.bcb.gov.br/sgspub/JSP/sgsgeral/FachadaWSSGS.wsdl"
+				// .setRequestHeader "Content-Type", "text/xml; charset=utf-8"
+				// .setRequestHeader "soapAction", "https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS/getValor"
+				// .setRequestHeader "Accept-encoding", "zip"
+				xhr.open("POST", "https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS?method=getValoresSeriesXML");
+				//xhr.setRequestHeader("origin", "https://www3.bcb.gov.br/sgspub/JSP/sgsgeral/FachadaWSSGS.wsdl");
+				xhr.setRequestHeader("content-type", "text/xml; charset=utf-8");
+				xhr.setRequestHeader("soapaction", "https://www3.bcb.gov.br/wssgs/services/FachadaWSSGS/getValoresSeriesXML");
+				//xhr.setRequestHeader("accept-encoding", "zip");
+				xhr.send(body);
+
+
+				xhr.onload = function() {
+					var state = this.readyState;
+					var responseCode = xhr.status;
+					console.log("xhr.onload called. readyState: " + state + "; status: " + responseCode);
+
+					if (state == this.DONE && responseCode == 200) {
+						var x2js = new X2JS();
+						var responseData = this.responseText;
+						responseData = x2js.xml_str2json(responseData); // Convert XML to JSON
+						responseData = x2js.xml_str2json(responseData.Envelope.Body.getValoresSeriesXMLResponse.getValoresSeriesXMLReturn.__text).SERIES;
+
+						resolve(responseData);
+					}
+				};
+				xhr.error = function(e) {
+					reject("request.error called. Error: " + e);
+				};
+			});
+		}
+		requestService().then(function(response){
+			console.log(response);
+			response.SERIE.forEach(serie => {
+				console.log(serie._ID);
+				serie.ITEM.forEach(item => {
+					console.log(item.VALOR);
+				});
+			});
+		})
+		.catch(function(error) {
+			console.log(error);
+		});
+	</script>
+</head>
+<body>
+	Hello World!
+</body>
+</html>

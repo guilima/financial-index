@@ -1,99 +1,154 @@
 <html>
-	<head>
-		<title>Indíces de valores financiais</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link rel="stylesheet" href="styles.css">
-	</head>
-	<body>
-		<section>
-			<h1>Índices Financeiros</h1>
-			<div>
-				<table cellpadding="0" cellspacing="0" border="0">
-					<thead class="tbl-header" id="tbl-header">
-						<tr id="tbl-header-tr">
-							<th></td>
-						</tr>
-					</thead>
-					<tbody class="tbl-content" id="tbl-body">
-						<tr id="tr-data"></tr>
-					</tbody>
-				</table>
-			</div>
-		</section>
-		<script>
-		function getValue() {
-				return new Promise(function (resolve, reject) {
-					var xhr = new XMLHttpRequest();
-					xhr.open('GET', 'http://localhost:3000/users');
-					xhr.setRequestHeader('content-type', 'application/json');
-					xhr.withCredentials = false;
 
-					xhr.onload = () => resolve(xhr.responseText);
-					xhr.onerror = () => reject(xhr.statusText);
+<head>
+  <title>Indíces de valores financiais</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/vue"></script>
+</head>
 
-					xhr.send();
-				});
-			};
-			getValue()
-				.then(function (values) {
-					console.log(JSON.parse(values));
-					(function() {
-						var res = JSON.parse(values);
-						var c = Number(res[1]);
-						function ibovespaPercentage(value, valueNext) {
-							    value = Number(value),
-								valueNext = typeof valueNext != 'undefined' ? Number(valueNext.valor) : c,
-								b = ( - ( ( valueNext * 100 ) / value ) + 100 ).toFixed(2);
-								console.log(valueNext);
-								//console.log(`${b}% (${numeric})`);
-								return `${b}% (${value})`;
-						}
-						res = res[0];
-						//console.log(res);
-						res.serie.forEach(serie => {
-							var title = function() {
-								switch (serie.ID) {
-									case 4391: return 'CDI';
-									case 433: return 'IPCA';
-									case 189: return 'IGP-M';
-									case 192: return 'INCC';
-									case 7845: return 'Ibovespa';
-									default: return 'Nulo';
-								}
-							};
-							var thElem = document.createElement("th"); 
-							var addTitle = document.createTextNode(title()); 
-							thElem.appendChild(addTitle);
-							var thRow = document.getElementById("tbl-header-tr");
-							thRow.appendChild(thElem);
-							//console.log(title());
+<body>
+  <section>
+    <h1>Índices Financeiros</h1>
+    <div id="app-4">
+      <h4 class="ui dividing header">Datas</h4>
+      <div class="ui labeled input">
+        <label class="ui label" for="dateInitial">Inicial</label>
+        <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial)">
+        <label for="dateEnd" class="ui label">Final</label>
+        <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd)">
+        <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="getValues('POST',{'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
+      </div>
+      <table cellpadding="0" cellspacing="0" border="0" class="mt-10">
+        <thead class="tbl-header" id="tbl-header">
+          <tr id="tbl-header-tr">
+            <th></th>
+            <th v-for="name in names" v-text="name"></th>
+          </tr>
+        </thead>
+        <tbody class="tbl-content" id="tbl-body">
+          <tr v-for="serie in series">
+            <td v-for="item in serie" v-html="item"></td>
+          </tr>
+        </tbody>
+      </table>
+  </section>
+  <script>
 
-							var trElem = document.createElement("tr");
-							var tbody = document.getElementById("tbl-body");
-							tbody.appendChild(trElem);
-							serie.item.forEach( (item, index) => {
-								if(serie.ID == 7845) {
-									var t = ibovespaPercentage(item.valor, serie.item[index+1]);
+    var vm = new Vue({
+      el: '#app-4',
+      data: {
+        names: [],
+        series: [],
+        dateInitial: '',
+        dateEnd: '',
+        validDate: true
+      },
+      methods: {
+        greet: function (event) {
+          this.names = ['repolho', 'abroba', 'chicunguya', 'salame', 'pepino']
+        },
+        inputDateInitial: function (date){
+          this.dateInitial = date.replace(/[^0-9]+/g, "");
 
-									var tdDataElem = document.createElement("td"); 
-									var trData = document.getElementById("tr-data");
-									tdDataElem.appendChild(document.createTextNode(`${item.data}`));
-									trData.appendChild(tdDataElem);
-								} else {
-									var t = `${item.valor}%`;
-									//console.log(`${item.valor}%`);
-								}
-								var tdElem = document.createElement("td");
-								var indexValue = document.createTextNode(t); 
-								tdElem.appendChild(indexValue);
-								trElem.appendChild(tdElem);
-							});
-						});
-					})();
-				})
-				.catch(function (err) {
-					console.error('Augh, there was an error!', err.statusText);
-				});
-		</script>
-	</body>
+          if(date.length > 2) this.dateInitial = date.substring(0,2) + "/" + date.substring(3,7);
+          return this.dateInitial;
+        },
+        inputDateEnd: function (date){
+          this.dateEnd = date.replace(/[^0-9]+/g, "");
+
+          if(date.length > 2) this.dateEnd = date.substring(0,2) + "/" + date.substring(3,7);
+          return this.dateEnd;
+        },
+        getValues: function (method, data) { abadalo(method, data) }
+      },
+      created: function () { this.getValues('GET') },
+      computed: {
+        isDisabled() {
+          // evaluate whatever you need to determine disabled here...
+          if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) && /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd)) {
+
+            return false;
+          } else {
+
+            return true;
+          }
+        }
+      }
+    });
+
+    function serviceValue(method, body = null) {
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, 'http://localhost:3000/users');
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.withCredentials = false;
+
+        xhr.onload = () => resolve(xhr.responseText);
+        xhr.onerror = () => reject(xhr);
+        if(body) body = JSON.stringify(body);
+        xhr.send(body);
+      });
+    };
+
+    function ibovespaPercentage(val, valNext, ibovespaLast) {
+      val = Number(val),
+        valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
+      var percentage = (- ((valNext * 100) / val) + 100).toFixed(2);
+      return `${percentage}%<br>(${val})`;
+    }
+
+    function abadalo(method, body) {
+      serviceValue(method, body)
+        .then(function (values) {
+          (function () {
+            var data = JSON.parse(values),
+              ibvspLast = Number(data[1]),
+              series = data[0].serie;
+
+            var dates = series[0].item.map((item, index) => item.data);
+
+            var seriesByDate = function() {
+              var reOrders = [];
+              dates.forEach((date, index) => {
+                reOrders[index] = [];
+                reOrders[index].push(date);
+                series.forEach(serie => {
+                  if (serie.ID == 7845) {
+                    serie.item[index].valor = ibovespaPercentage(serie.item[index].valor, serie.item[index + 1], ibvspLast);
+                  } else {
+                    serie.item[index].valor = `${serie.item[index].valor}%`;
+                  }
+                  reOrders[index].push(serie.item[index].valor);
+                });
+              });
+              return reOrders;
+            };
+
+            vm.names = series.map(serie => {
+              switch (serie.ID) {
+                case 4391: return 'CDI';
+                case 433: return 'IPCA';
+                case 189: return 'IGP-M';
+                case 192: return 'INCC';
+                case 7845: return 'Ibovespa';
+                default: return '';
+              }
+            });
+            vm.series = seriesByDate();
+            //console.log(vm);
+          })();
+
+        }).catch(function (err) {
+          console.error('Augh, there was an error!', err);
+        });
+    }
+
+    //abadalo('GET');
+
+
+
+  </script>
+</body>
+
 </html>
