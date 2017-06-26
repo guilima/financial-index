@@ -19,19 +19,27 @@
         <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd)">
         <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="getValues('POST',{'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
       </div>
-      <table cellpadding="0" cellspacing="0" border="0" class="mt-10">
-        <thead class="tbl-header" id="tbl-header">
-          <tr id="tbl-header-tr">
-            <th></th>
-            <th v-for="name in names" v-text="name"></th>
-          </tr>
-        </thead>
-        <tbody class="tbl-content" id="tbl-body">
-          <tr v-for="serie in series">
-            <td v-for="item in serie" v-html="item"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-component">
+        <div class="sk-folding-cube" v-show="loading">
+          <div class="sk-cube1 sk-cube"></div>
+          <div class="sk-cube2 sk-cube"></div>
+          <div class="sk-cube4 sk-cube"></div>
+          <div class="sk-cube3 sk-cube"></div>
+        </div>
+        <table cellpadding="0" cellspacing="0" border="0" class="mt-10">
+          <thead class="tbl-header" id="tbl-header">
+            <tr id="tbl-header-tr">
+              <th></th>
+              <th v-for="name in names" v-text="name"></th>
+            </tr>
+          </thead>
+          <tbody class="tbl-content" id="tbl-body">
+            <tr v-for="serie in series" v-show="!loading">
+              <td v-for="item in serie" v-html="item"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
   </section>
   <script>
 
@@ -42,12 +50,9 @@
         series: [],
         dateInitial: '',
         dateEnd: '',
-        validDate: true
+        loading: true
       },
       methods: {
-        greet: function (event) {
-          this.names = ['repolho', 'abroba', 'chicunguya', 'salame', 'pepino']
-        },
         inputDateInitial: function (date){
           this.dateInitial = date.replace(/[^0-9]+/g, "");
 
@@ -62,11 +67,11 @@
         },
         getValues: function (method, data) { abadalo(method, data) }
       },
-      created: function () { this.getValues('GET') },
+      mounted: function () { this.getValues('GET') },
       computed: {
         isDisabled() {
           // evaluate whatever you need to determine disabled here...
-          if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) && /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd)) {
+          if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) && /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd) && !this.loading) {
 
             return false;
           } else {
@@ -100,6 +105,7 @@
     }
 
     function abadalo(method, body) {
+      if(method === 'POST') vm.loading = true;
       serviceValue(method, body)
         .then(function (values) {
           (function () {
@@ -142,6 +148,8 @@
 
         }).catch(function (err) {
           console.error('Augh, there was an error!', err);
+        }).then(function() {
+          vm.loading = false;
         });
     }
 
