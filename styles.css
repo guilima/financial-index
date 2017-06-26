@@ -3,8 +3,8 @@
 [v-cloak] { display: none; }
 [disabled] {
   background: #e0e1e2 none!important;
-  color: rgba(0,0,0,.6)!important;
-  user-select: pointer;
+  color: rgba(0,0,0,.4)!important;
+  cursor: not-allowed!important;
 }
 *, :after, :before { box-sizing: border-box; }
 body {
