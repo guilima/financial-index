@@ -14,9 +14,9 @@
       <h4 class="ui dividing header">Datas</h4>
       <div class="ui labeled input">
         <label class="ui label" for="dateInitial">Inicial</label>
-        <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial)">
+        <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial, $event)">
         <label for="dateEnd" class="ui label">Final</label>
-        <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd)">
+        <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd, $event)">
         <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="getValues('POST',{'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
       </div>
       <div class="table-component">
@@ -53,17 +53,19 @@
         loading: true
       },
       methods: {
-        inputDateInitial: function (date){
-          this.dateInitial = date.replace(/[^0-9]+/g, "");
-
-          if(date.length > 2) this.dateInitial = date.substring(0,2) + "/" + date.substring(3,7);
-          return this.dateInitial;
+        inputDateInitial: function (date, event){
+          if(event.key !== "Backspace") {
+            if( date.match(/^(?![0-1])/) )  this.dateInitial = "";
+            if( date.match(/^(1[0-2]|0[1-9])/) ) this.dateInitial = date.substring(0,2) + "/" + date.substring(3,7);
+            return this.dateInitial;
+          }
         },
-        inputDateEnd: function (date){
-          this.dateEnd = date.replace(/[^0-9]+/g, "");
-
-          if(date.length > 2) this.dateEnd = date.substring(0,2) + "/" + date.substring(3,7);
-          return this.dateEnd;
+        inputDateEnd: function (date,event){
+          if(event.key !== "Backspace") {
+            if( date.match(/^(?![0-1])/) ) this.dateEnd = "";
+            if( date.match(/^(1[0-2]|0[1-9])/) ) this.dateEnd = date.substring(0,2) + "/" + date.substring(3,7);
+            return this.dateEnd;
+          }
         },
         getValues: function (method, data) { abadalo(method, data) }
       },
@@ -71,7 +73,11 @@
       computed: {
         isDisabled() {
           // evaluate whatever you need to determine disabled here...
-          if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) && /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd) && !this.loading) {
+          if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) &&
+              /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd) &&
+              this.dateEnd.split('/').reverse().join('') > this.dateInitial.split('/').reverse().join('') &&
+              this.dateEnd.split('/')[1] <= new Date().getFullYear() &&
+              !this.loading) {
 
             return false;
           } else {
