@@ -42,7 +42,7 @@ table{
 }
 .tbl-content {
   display:block;
-  height:366px;
+  max-height: 366px;
   overflow:auto;
 }
 .tbl-header,
