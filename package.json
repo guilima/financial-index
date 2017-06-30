@@ -4,9 +4,10 @@
   "description": "Amostragem dos índices financeiros por meio de uma API em Nodejs",
   "dependencies": {
     "vue": "^2.3.4",
-    "vue-resource": "^1.3.4"
+    "vue-resource": "^1.3.4",
+    "chartist": "^0.11.0"
   },
   "devDependencies": {
-    "chartist": "^0.11.0"
+    "webpack": "^3.0.0"
   }
 }
