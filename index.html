@@ -68,9 +68,9 @@
             return this.dateEnd;
           }
         },
-        getValues: function (method, data) { abadalo(method, data) }
+        getValues: function (method, data) { getValoresSeries(method, data) }
       },
-      mounted: function () { console.log(this);this.getValues('GET') },
+      mounted: function () { this.getValues('GET') },
 
       computed: {
         isDisabled: function() {
@@ -90,7 +90,7 @@
       }
     });
 
-    function serviceValue(method, body = null) {
+    function valoresSeriesService(method, body = null) {
       return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
         //xhr.open(method, 'http://localhost:3000/users');
@@ -105,55 +105,51 @@
       });
     };
 
-    function ibovespaPercentage(val, valNext, ibovespaLast) {
+    function pctIbovespaCalc(val, valNext, ibovespaLast) {
       val = Number(val),
-        valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
+      valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
       var percentage = (- ((valNext * 100) / val) + 100).toFixed(2);
       return `${percentage}%<br>(${val})`;
     }
 
-    function abadalo(method, body) {
-      console.log(vm);
+    function getValoresSeries(method, body) {
       if(body) vm.loading = true;
-      serviceValue(method, body)
+      valoresSeriesService(method, body)
         .then(function (values) {
-          (function () {
-            var data = JSON.parse(values),
-              ibvspLast = Number(data[1]),
-              series = data[0].serie;
+          var dataService = JSON.parse(values),
+              ibovespaLastMonth = Number(dataService[1]),
+              series = dataService[0].serie,
+              dates = series[0].item.map((item, index) => item.data);
 
-            var dates = series[0].item.map((item, index) => item.data);
-
-            var seriesByDate = function() {
-              var reOrders = [];
-              dates.forEach((date, index) => {
-                reOrders[index] = [];
-                reOrders[index].push(date);
-                series.forEach(serie => {
-                  if (serie.ID == 7845) {
-                    serie.item[index].valor = ibovespaPercentage(serie.item[index].valor, serie.item[index + 1], ibvspLast);
-                  } else {
-                    serie.item[index].valor = `${serie.item[index].valor}%`;
-                  }
-                  reOrders[index].push(serie.item[index].valor);
-                });
+          var seriesByDate = function() {
+            var reOrders = [];
+            dates.forEach((date, index) => {
+              reOrders[index] = [];
+              reOrders[index].push(date);
+              series.forEach(serie => {
+                if (serie.ID == 7845) {
+                  serie.item[index].valor = pctIbovespaCalc(serie.item[index].valor, serie.item[index + 1], ibovespaLastMonth);
+                } else {
+                  serie.item[index].valor = `${serie.item[index].valor}%`;
+                }
+                reOrders[index].push(serie.item[index].valor);
               });
-              return reOrders;
-            };
-
-            vm.names = series.map(serie => {
-              switch (serie.ID) {
-                case 4391: return 'CDI';
-                case 433: return 'IPCA';
-                case 189: return 'IGP-M';
-                case 192: return 'INCC';
-                case 7845: return 'Ibovespa';
-                default: return '';
-              }
             });
-            vm.series = seriesByDate();
-            //console.log(vm);
-          })();
+            return reOrders;
+          };
+
+          vm.names = series.map(serie => {
+            switch (serie.ID) {
+              case 4391: return 'CDI';
+              case 433: return 'IPCA';
+              case 189: return 'IGP-M';
+              case 192: return 'INCC';
+              case 7845: return 'Ibovespa';
+              default: return '';
+            }
+          });
+          vm.series = seriesByDate();
+          //console.log(vm);
 
         }).catch(function (err) {
           console.error('Augh, there was an error!', err);
@@ -162,7 +158,7 @@
         });
     }
 
-    //abadalo('GET');
+    //getValoresSeries('GET');
 
 
 
