@@ -1,47 +1,46 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Indíces de valores financiais</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
 
-<head>
-  <title>Indíces de valores financiais</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link rel="stylesheet" href="styles.css">
-</head>
-
-<body>
-  <section>
-    <h1>Índices Financeiros</h1>
-    <div id="app-4">
-      <h4 class="ui dividing header">Datas</h4>
-      <div class="ui labeled input">
-        <label class="ui label" for="dateInitial">Inicial</label>
-        <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial, $event)">
-        <label for="dateEnd" class="ui label">Final</label>
-        <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd, $event)">
-        <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="getValues('POST',{'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
-      </div>
-      <div class="table-component">
-        <div class="sk-folding-cube" v-show="loading">
-          <div class="sk-cube1 sk-cube"></div>
-          <div class="sk-cube2 sk-cube"></div>
-          <div class="sk-cube4 sk-cube"></div>
-          <div class="sk-cube3 sk-cube"></div>
+  <body>
+    <section>
+      <h1>Índices Financeiros</h1>
+      <div id="app-4">
+        <h4 class="ui dividing header">Datas</h4>
+        <div class="ui labeled input">
+          <label class="ui label" for="dateInitial">Inicial</label>
+          <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial, $event)">
+          <label for="dateEnd" class="ui label">Final</label>
+          <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd, $event)">
+          <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="getValues('POST',{'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
         </div>
-        <table cellpadding="0" cellspacing="0" border="0" class="mt-10">
-          <thead class="tbl-header" id="tbl-header">
-            <tr id="tbl-header-tr">
-              <th></th>
-              <th v-for="name in names" v-text="name"></th>
-            </tr>
-          </thead>
-          <tbody class="tbl-content" id="tbl-body">
-            <tr v-for="serie in series" v-show="!loading">
-              <td v-for="item in serie" v-html="item"></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-component">
+          <div class="sk-folding-cube" v-show="loading">
+            <div class="sk-cube1 sk-cube"></div>
+            <div class="sk-cube2 sk-cube"></div>
+            <div class="sk-cube4 sk-cube"></div>
+            <div class="sk-cube3 sk-cube"></div>
+          </div>
+          <table cellpadding="0" cellspacing="0" border="0" class="mt-10">
+            <thead class="tbl-header" id="tbl-header">
+              <tr id="tbl-header-tr">
+                <th></th>
+                <th v-for="name in names" v-text="name"></th>
+              </tr>
+            </thead>
+            <tbody class="tbl-content" id="tbl-body">
+              <tr v-for="serie in series" v-show="!loading">
+                <td v-for="item in serie" v-html="item"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </section>
-  <script src="dist/app.bundle.js"></script>
-</body>
-
+    </section>
+    <script src="dist/app.bundle.js"></script>
+  </body>
 </html>
