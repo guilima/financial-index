@@ -8,7 +8,7 @@
     "url": "https://github.com/guilima/financials-index.git"
   },
   "scripts": {
-    "webpack": "webpack --hide-modules",
+    "prod": "webpack --hide-modules",
     "dev": "webpack --hide-modules --watch"
   },
   "dependencies": {
