@@ -1,3 +1,5 @@
-Vue.component('my-component', {
-  template: '<div>A custom component!</div>'
+import Vue from 'vue';
+
+Vue.component('filter-date', {
+  template: '<div>A custom componentss!</div>'
 });

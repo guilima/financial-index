@@ -1,3 +1,4 @@
+import Filtering from './filter/date';
 import Vue from 'vue';
 
 var vm = new Vue({
