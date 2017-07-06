@@ -7,28 +7,18 @@ var proxy = {
 };
 
 module.exports = {
-  context: path.resolve(__dirname, './src'),
-  entry: {
-    app: './app.js',
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin() // Enable HMR
-  ],
+  entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: '[name].bundle.js',
+    publicPath: "/dist/",
+    filename: 'app.bundle.js'
   },
   resolve: {
     alias: { vue: 'vue/dist/vue.esm.js' }
   },
   devServer: {
-
-    open: true,
-    publicPath: "/dist/",
-    hot: true, // Tell the dev-server we're using HMW
-    //https: true,
     host: 'local.financial.index',
-    port: 8082,
-    openPage: '',
-  }
+    port: 8082
+  },
+  devtool: '#eval-source-map'
 };
