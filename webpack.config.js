@@ -13,6 +13,19 @@ module.exports = {
     publicPath: "/dist/",
     filename: 'app.bundle.js'
   },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            'scss': 'vue-style-loader!css-loader!sass-loader'
+          }
+        }
+      }
+    ]
+  },
   resolve: {
     alias: { vue: 'vue/dist/vue.esm.js' }
   },
