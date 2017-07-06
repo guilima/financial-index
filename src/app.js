@@ -1,8 +1,9 @@
-import Filtering from './filter/date';
+import Filtering from './filter/date.vue';
 import Vue from 'vue';
 
 var vm = new Vue({
   el: '#app-4',
+  render: h => h(Filtering),
   data: {
     names: [],
     series: [],
