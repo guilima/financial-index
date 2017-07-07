@@ -33,5 +33,8 @@ module.exports = {
     host: 'local.financial.index',
     port: 8082
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+  ]
 };
