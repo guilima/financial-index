@@ -1,52 +1,20 @@
-import Filtering from './filter/date.vue';
+import FilterDate from './filter/date.vue';
 import Vue from 'vue';
 
 var vm = new Vue({
   el: '#app-4',
-  render: h => h(Filtering),
   data: {
     names: [],
     series: [],
-    dateInitial: '',
-    dateEnd: '',
     loading: true
   },
+  components: {
+    FilterDate
+  },
   methods: {
-    inputDateInitial: function (date, event) {
-      //date = {item: "changed"};
-      if (event.key !== "Backspace") {
-        if (date.match(/^(?![0-1])/)) this.dateInitial = "";
-        if (date.match(/^(1[0-2]|0[1-9])/)) this.dateInitial = date.substring(0, 2) + "/" + date.substring(3, 7);
-        return this.dateInitial;
-      }
-    },
-    inputDateEnd: function (date, event) {
-      if (event.key !== "Backspace") {
-        if (date.match(/^(?![0-1])/)) this.dateEnd = "";
-        if (date.match(/^(1[0-2]|0[1-9])/)) this.dateEnd = date.substring(0, 2) + "/" + date.substring(3, 7);
-        return this.dateEnd;
-      }
-    },
     getValues: function (method, data) { getValoresSeries(method, data); }
   },
   mounted: function () { this.getValues('GET'); },
-
-  computed: {
-    isDisabled: function () {
-      // evaluate whatever you need to determine disabled here...
-      if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) &&
-        /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd) &&
-        this.dateEnd.split('/').reverse().join('') > this.dateInitial.split('/').reverse().join('') &&
-        this.dateEnd.split('/')[1] <= new Date().getFullYear() &&
-        !this.loading) {
-
-        return false;
-      } else {
-
-        return true;
-      }
-    }
-  }
 });
 
 function valoresSeriesService(method, body = null) {
