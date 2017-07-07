@@ -13,8 +13,29 @@ var vm = new Vue({
     FilterDate
   },
   methods: {
-    getValues() { getValoresSeries(); },
-    postValues(body) { getValoresSeries(body); }
+    getValues() {
+      valuesService.getValuesSeriesService()
+        .then(function (values) {
+          valore(values);
+          console.log('Success');
+        }).catch(function (err) {
+          console.error('Augh, there was an error!', err);
+        }).then(function () {
+          vm.loading = false;
+        });
+    },
+    postValues(body) {
+      this.loading = true;
+      valuesService.postValuesSeriesService(body)
+        .then(function (values) {
+          valore(values);
+          console.log('Success');
+        }).catch(function (err) {
+          console.error('Augh, there was an error!', err);
+        }).then(function () {
+          vm.loading = false;
+        });
+    }
   },
   mounted: function () { this.getValues(); },
 });
@@ -35,53 +56,43 @@ function valoresSeriesService(method, body = null) {
 
 function pctIbovespaCalc(val, valNext, ibovespaLast) {
   val = Number(val),
-  valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
+    valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
   var percentage = (- ((valNext * 100) / val) + 100).toFixed(2);
   return `${percentage}%<br>(${val})`;
 }
 
-function getValoresSeries(method, body) {
-  if (body) vm.loading = true;
-  valuesService.getValuesSeriesService()
-    .then(function (values) {
-      var dataService = JSON.parse(values),
-        ibovespaLastMonth = Number(dataService[1]),
-        series = dataService[0].serie,
-        dates = series[0].item.map((item, index) => item.data);
-      console.log(dataService);
-      var seriesByDate = function () {
-        var reOrders = [];
-        dates.forEach((date, index) => {
-          reOrders[index] = [];
-          reOrders[index].push(date);
-          series.forEach(serie => {
-            if (serie.ID == 7845) {
-              serie.item[index].valor = pctIbovespaCalc(serie.item[index].valor, serie.item[index + 1], ibovespaLastMonth);
-            } else {
-              serie.item[index].valor = `${serie.item[index].valor}%`;
-            }
-            reOrders[index].push(serie.item[index].valor);
-          });
-        });
-        return reOrders;
-      };
-
-      vm.names = series.map(serie => {
-        switch (serie.ID) {
-          case 4391: return 'CDI';
-          case 433: return 'IPCA';
-          case 189: return 'IGP-M';
-          case 192: return 'INCC';
-          case 7845: return 'Ibovespa';
-          default: return '';
+function valore(values) {
+  var dataService = JSON.parse(values),
+    ibovespaLastMonth = Number(dataService[1]),
+    series = dataService[0].serie,
+    dates = series[0].item.map((item, index) => item.data);
+  console.log(dataService);
+  var seriesByDate = function () {
+    var reOrders = [];
+    dates.forEach((date, index) => {
+      reOrders[index] = [];
+      reOrders[index].push(date);
+      series.forEach(serie => {
+        if (serie.ID == 7845) {
+          serie.item[index].valor = pctIbovespaCalc(serie.item[index].valor, serie.item[index + 1], ibovespaLastMonth);
+        } else {
+          serie.item[index].valor = `${serie.item[index].valor}%`;
         }
+        reOrders[index].push(serie.item[index].valor);
       });
-      vm.series = seriesByDate();
-      //console.log(vm);
-
-    }).catch(function (err) {
-      console.error('Augh, there was an error!', err);
-    }).then(function () {
-      vm.loading = false;
     });
+    return reOrders;
+  };
+
+  vm.names = series.map(serie => {
+    switch (serie.ID) {
+      case 4391: return 'CDI';
+      case 433: return 'IPCA';
+      case 189: return 'IGP-M';
+      case 192: return 'INCC';
+      case 7845: return 'Ibovespa';
+      default: return '';
+    }
+  });
+  vm.series = seriesByDate();
 }

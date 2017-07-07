@@ -4,7 +4,7 @@
     <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial, $event)">
     <label for="dateEnd" class="ui label">Final</label>
     <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd, $event)">
-    <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="getValues('POST',{'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
+    <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="postValues({'dateInitial':'28/'+dateInitial,'dateEnd':'28/'+dateEnd})">Atualizar data</button>
   </div>
 </template>
 
@@ -29,8 +29,7 @@ export default {
         if (date.match(/^(1[0-2]|0[1-9])/)) this.dateEnd = date.substring(0, 2) + "/" + date.substring(3, 7);
         return this.dateEnd;
       }
-    },
-    getValues: function (method, data) { getValoresSeries(method, data); }
+    }
   },
   computed: {
     isDisabled: function () {
