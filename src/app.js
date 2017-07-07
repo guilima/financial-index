@@ -1,4 +1,4 @@
-import FilterDate from './filter/date.vue';
+import FilterDate from './components/filter/date.vue';
 import Vue from 'vue';
 
 var vm = new Vue({
