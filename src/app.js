@@ -20,7 +20,6 @@ var vm = new Vue({
 function valoresSeriesService(method, body = null) {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
-    //xhr.open(method, 'http://localhost:3000/users');
     xhr.open(method, 'https://fintech-bcb.herokuapp.com/users/');
     xhr.setRequestHeader('content-type', 'application/json');
     xhr.withCredentials = false;
