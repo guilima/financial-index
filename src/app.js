@@ -1,4 +1,5 @@
 import FilterDate from './components/filter/date.vue';
+import valuesService from './services/valueSeries';
 import Vue from 'vue';
 
 var vm = new Vue({
@@ -12,9 +13,10 @@ var vm = new Vue({
     FilterDate
   },
   methods: {
-    getValues: function (method, data) { getValoresSeries(method, data); }
+    getValues() { getValoresSeries(); },
+    postValues(body) { getValoresSeries(body); }
   },
-  mounted: function () { this.getValues('GET'); },
+  mounted: function () { this.getValues(); },
 });
 
 function valoresSeriesService(method, body = null) {
@@ -40,7 +42,7 @@ function pctIbovespaCalc(val, valNext, ibovespaLast) {
 
 function getValoresSeries(method, body) {
   if (body) vm.loading = true;
-  valoresSeriesService(method, body)
+  valuesService.getValuesSeriesService()
     .then(function (values) {
       var dataService = JSON.parse(values),
         ibovespaLastMonth = Number(dataService[1]),
