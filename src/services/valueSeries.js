@@ -14,7 +14,7 @@ function getValuesSeriesService() {
 function postValuesSeriesService(body) {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
-    xhr.open(POST, 'https://fintech-bcb.herokuapp.com/users/');
+    xhr.open('POST', 'https://fintech-bcb.herokuapp.com/users/');
     xhr.setRequestHeader('content-type', 'application/json');
     xhr.withCredentials = false;
 
