@@ -40,20 +40,6 @@ var vm = new Vue({
   mounted: function () { this.getValues(); },
 });
 
-function valoresSeriesService(method, body = null) {
-  return new Promise(function (resolve, reject) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, 'https://fintech-bcb.herokuapp.com/users/');
-    xhr.setRequestHeader('content-type', 'application/json');
-    xhr.withCredentials = false;
-
-    xhr.onload = () => resolve(xhr.responseText);
-    xhr.onerror = () => reject(xhr);
-    if (body) body = JSON.stringify(body);
-    xhr.send(body);
-  });
-}
-
 function pctIbovespaCalc(val, valNext, ibovespaLast) {
   val = Number(val),
     valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
