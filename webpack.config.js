@@ -10,7 +10,7 @@ module.exports = {
   entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: "/dist/",
+    publicPath: '/dist/',
     filename: 'app.bundle.js'
   },
   module: {
@@ -27,6 +27,7 @@ module.exports = {
     ]
   },
   resolve: {
+    modules: [path.resolve(__dirname, './src'), 'node_modules'],
     alias: { vue: 'vue/dist/vue.esm.js' }
   },
   devServer: {
