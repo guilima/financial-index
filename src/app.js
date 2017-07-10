@@ -1,5 +1,5 @@
-import FilterDate from './components/filter/date.vue';
-import valuesService from './services/valueSeries';
+import FilterDate from 'components/filter/date.vue';
+import valuesService from 'services/valueSeries';
 import Vue from 'vue';
 
 var vm = new Vue({
@@ -49,12 +49,27 @@ function pctIbovespaCalc(val, valNext, ibovespaLast) {
 
 function valore(values) {
   var dataService = JSON.parse(values),
-    ibovespaLastMonth = Number(dataService[1]),
-    series = dataService[0].serie,
-    dates = series[0].item.map((item, index) => item.data);
+      ibovespaLastMonth = Number(dataService[1]),
+      series = dataService[0].serie;
+
   console.log(dataService);
-  var seriesByDate = function () {
-    var reOrders = [];
+
+  vm.names = series.map(serie => {
+    switch (serie.ID) {
+      case 4391: return 'CDI';
+      case 433: return 'IPCA';
+      case 189: return 'IGP-M';
+      case 192: return 'INCC';
+      case 7845: return 'Ibovespa';
+      default: return '';
+    }
+  });
+  vm.series = seriesByDate(series);
+
+  function seriesByDate(series) {
+    var reOrders = [],
+        dates = series[0].item.map((item, index) => item.data);
+
     dates.forEach((date, index) => {
       reOrders[index] = [];
       reOrders[index].push(date);
@@ -68,17 +83,5 @@ function valore(values) {
       });
     });
     return reOrders;
-  };
-
-  vm.names = series.map(serie => {
-    switch (serie.ID) {
-      case 4391: return 'CDI';
-      case 433: return 'IPCA';
-      case 189: return 'IGP-M';
-      case 192: return 'INCC';
-      case 7845: return 'Ibovespa';
-      default: return '';
-    }
-  });
-  vm.series = seriesByDate();
+  }
 }
