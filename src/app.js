@@ -13,20 +13,9 @@ var vm = new Vue({
     FilterDate
   },
   methods: {
-    getValues() {
-      valuesService.getValuesSeriesService()
-        .then(function (values) {
-          valore(values);
-          console.log('Success');
-        }).catch(function (err) {
-          console.error('Augh, there was an error!', err);
-        }).then(function () {
-          vm.loading = false;
-        });
-    },
-    postValues(body) {
+    getValues(dateInitial, dateEnd) {
       this.loading = true;
-      valuesService.postValuesSeriesService(body)
+      valuesService.getValuesSeriesService(dateInitial, dateEnd)
         .then(function (values) {
           valore(values);
           console.log('Success');
@@ -52,7 +41,7 @@ function valore(values) {
       ibovespaLastMonth = Number(dataService[1]),
       series = dataService[0].serie;
 
-  console.log(dataService);
+  console.log(dataService, series);
 
   vm.names = series.map(serie => {
     switch (serie.ID) {
@@ -74,10 +63,14 @@ function valore(values) {
       reOrders[index] = [];
       reOrders[index].push(date);
       series.forEach(serie => {
-        if (serie.ID == 7845) {
-          serie.item[index].valor = pctIbovespaCalc(serie.item[index].valor, serie.item[index + 1], ibovespaLastMonth);
+        if(serie.item[index].valor) {
+          if (serie.ID == 7845) {
+            serie.item[index].valor = pctIbovespaCalc(serie.item[index].valor, serie.item[index + 1], ibovespaLastMonth);
+          } else {
+            serie.item[index].valor = `${serie.item[index].valor}%`;
+          }
         } else {
-          serie.item[index].valor = `${serie.item[index].valor}%`;
+          serie.item[index].valor = '-';
         }
         reOrders[index].push(serie.item[index].valor);
       });
