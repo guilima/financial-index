@@ -1,4 +1,4 @@
-import AppFilter from 'components/filter/date.vue';
+import AppFilter from 'components/filter/app-filter.vue';
 import valuesService from 'services/valueSeries';
 import Vue from 'vue';
 

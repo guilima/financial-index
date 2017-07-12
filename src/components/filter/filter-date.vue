@@ -1,10 +1,9 @@
 <template>
-  <div class="ui labeled input">
+  <div>
     <label class="ui label" for="dateInitial">Inicial</label>
     <input class="mr-10" type="text" id="dateInitial" value="" v-model="dateInitial" placeholder="MM/YYYY" v-on:keyup="inputDateInitial(dateInitial, $event)">
     <label for="dateEnd" class="ui label">Final</label>
     <input class="mr-10" type="text" name="dateEnd" id="dateEnd" value="" v-model="dateEnd" placeholder="MM/YYYY" v-on:keyup="inputDateEnd(dateEnd, $event)">
-    <button class="ui primary button" :disabled="isDisabled" type="button" v-on:click="onChange('28/'+dateInitial,'28/'+dateEnd)">Atualizar data</button>
   </div>
 </template>
 
@@ -16,38 +15,25 @@ export default {
   }),
   methods: {
     inputDateInitial: function (date, event) {
-      //date = {item: "changed"};
       if (event.key !== "Backspace") {
         if (date.match(/^(?![0-1])/)) this.dateInitial = "";
         if (date.match(/^(1[0-2]|0[1-9])/)) this.dateInitial = date.substring(0, 2) + "/" + date.substring(3, 7);
-        return this.dateInitial;
       }
+      this.groupDate;
+      return this.dateInitial;
     },
     inputDateEnd: function (date, event) {
       if (event.key !== "Backspace") {
         if (date.match(/^(?![0-1])/)) this.dateEnd = "";
         if (date.match(/^(1[0-2]|0[1-9])/)) this.dateEnd = date.substring(0, 2) + "/" + date.substring(3, 7);
-        return this.dateEnd;
       }
-    },
-    onChange (values, values2) {
-      this.$emit('update', values, values2)
+      this.groupDate;
+      return this.dateEnd;
     }
   },
   computed: {
-    isDisabled: function () {
-      // evaluate whatever you need to determine disabled here...
-      if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) &&
-        /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd) &&
-        this.dateEnd.split('/').reverse().join('') > this.dateInitial.split('/').reverse().join('') &&
-        this.dateEnd.split('/')[1] <= new Date().getFullYear() &&
-        !this.loading) {
-
-        return false;
-      } else {
-
-        return true;
-      }
+    groupDate: function() {
+      this.$emit('dates', this.dateInitial, this.dateEnd);
     }
   }
 };
