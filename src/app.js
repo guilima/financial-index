@@ -1,4 +1,4 @@
-import FilterDate from 'components/filter/date.vue';
+import AppFilter from 'components/filter/date.vue';
 import valuesService from 'services/valueSeries';
 import Vue from 'vue';
 
@@ -10,7 +10,7 @@ var vm = new Vue({
     loading: true
   },
   components: {
-    FilterDate
+    AppFilter
   },
   methods: {
     getValues(dateInitial, dateEnd) {
@@ -31,7 +31,7 @@ var vm = new Vue({
 
 function pctIbovespaCalc(val, valNext, ibovespaLast) {
   val = Number(val),
-    valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
+  valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
   var percentage = (- ((valNext * 100) / val) + 100).toFixed(2);
   return `${percentage}%<br>(${val})`;
 }
