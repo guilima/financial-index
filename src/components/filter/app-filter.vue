@@ -1,5 +1,5 @@
 <template>
-  <div class="ui labeled input">
+  <div>
     <filter-date @dates="fetchValue"></filter-date>
     <button class="ui primary button"
       type="button"
