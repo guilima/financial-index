@@ -25,8 +25,10 @@ export default {
     inputDate: function (date, event) {
       if (event.key !== "Backspace") {
         var itDate = date;
+        if (date.match(/^(?!1[0-2])/)) itDate = date.substring(0, 1);
         if (date.match(/^(?![0-1])/)) itDate = '';
-        if (date.match(/^(1[0-2]|0[1-9])/)) itDate = date.substring(0, 2) + "/" + date.substring(3, 7);
+        if (date.match(/^(0[1-9]|1[0-2])/)) itDate = date.substring(0, 2) + "/" + date.substring(3, 7);
+
         if(itDate !== date)
           this.$refs.input.value = itDate;
       }
