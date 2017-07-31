@@ -56,19 +56,21 @@ table{
 .tbl-header{
   background-color: rgba(255,255,255,0.8);
 }
+th, td {
+  line-height: 1;
+  border-top: solid 1px transparent;
+  padding: 16px 7px;
+  vertical-align:middle;
+  text-align: center;
+}
 th{
-  padding: 15px 15px 15px 0px;
-  text-align: left;
   font-weight: 600;
   font-size: 15px;
   color: #3f3f3f;
   text-transform: uppercase;
-  box-sizing: border-box;
+  border-bottom: solid 1px transparent;
 }
 td{
-  padding: 12px 12px 12px 12px;
-  text-align: left;
-  vertical-align:middle;
   font-weight: 500;
   font-size: 14px;
   color: #393939;
