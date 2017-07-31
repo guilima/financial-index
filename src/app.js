@@ -29,16 +29,41 @@ var vm = new Vue({
   mounted: function () { this.getValues(); },
 });
 
-function pctIbovespaCalc(val, valNext, ibovespaLast) {
-  val = Number(val),
-  valNext = (typeof valNext != 'undefined') ? Number(valNext.valor) : ibovespaLast;
+function ibovespaToPercentage(val, valNext) {
   var percentage = (- ((valNext * 100) / val) + 100).toFixed(2);
-  return `${percentage}%<br>(${val})`;
+  return percentage;
+}
+
+function numberFormatter (value) {
+  if(!isFinite(value) || value == 0) return '-';
+  return `${value}%`;
+}
+
+function seriesByDate(series, ibovespaLastMonth) {
+  var reOrders = [],
+      allDates = series[0].item.map((item, index) => item.data);
+
+  allDates.forEach((date, index) => {
+    reOrders[index] = [];
+    reOrders[index].push(date);
+    series.forEach(serie => {
+      let itemValue = Number(serie.item[index].valor);
+      if (serie.ID == 7845) {
+        let valNext = serie.item[index + 1] ? Number(serie.item[index + 1].valor) : Number(ibovespaLastMonth);
+        let ibovespaPercentageValue = ibovespaToPercentage(itemValue, valNext);
+        itemValue = numberFormatter(ibovespaPercentageValue);
+      } else {
+        itemValue = numberFormatter(itemValue);
+      }
+      reOrders[index].push(itemValue);
+    });
+  });
+  return reOrders;
 }
 
 function valore(values) {
   var dataService = JSON.parse(values),
-      ibovespaLastMonth = Number(dataService[1]),
+      ibovespaLastMonth = dataService[1],
       series = dataService[0].serie;
 
   console.log(dataService, series);
@@ -53,28 +78,5 @@ function valore(values) {
       default: return '';
     }
   });
-  vm.series = seriesByDate(series);
-
-  function seriesByDate(series) {
-    var reOrders = [],
-        dates = series[0].item.map((item, index) => item.data);
-
-    dates.forEach((date, index) => {
-      reOrders[index] = [];
-      reOrders[index].push(date);
-      series.forEach(serie => {
-        if(serie.item[index].valor) {
-          if (serie.ID == 7845) {
-            serie.item[index].valor = pctIbovespaCalc(serie.item[index].valor, serie.item[index + 1], ibovespaLastMonth);
-          } else {
-            serie.item[index].valor = `${serie.item[index].valor}%`;
-          }
-        } else {
-          serie.item[index].valor = '-';
-        }
-        reOrders[index].push(serie.item[index].valor);
-      });
-    });
-    return reOrders;
-  }
+  vm.series = seriesByDate(series, ibovespaLastMonth);
 }
