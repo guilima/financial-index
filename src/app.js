@@ -64,25 +64,55 @@ function seriesByDate(series, ibovespaLastMonth) {
 
 function chartist(series) {
   var dates = series.map(serie => serie[0]);
-  // var chartSeries = [];
-  // series.forEach((serie, i) => {
-  //   chartSeries[i] = [];
-  //   serie.forEach((value,index) => {
-  //     chartSeries[i].push(serie[index]);
-  //   });
-  // });
-  // console.log(chartSeries);
+  var chartSeries = [];
+  series[0].forEach((serie, i) => {
+    chartSeries[i] = [];
+  });
+  series.forEach((serie, i) => {
+    serie.forEach((value,index) => {
+      if(serie[index] === '-') {
+        chartSeries[index].push( null );
+      } else {
+        chartSeries[index].push( Number( serie[index].replace('%','') ) );
+      }
+    });
+  });
+  chartSeries.shift();
   var data = {
-    // A labels array that can contain any sort of values
     labels: dates,
-    // Our series array that contains series objects or in this case series data arrays
-    series: [
-      [12, 9, 7, 8, 5, 5],
-      [2, 1, 3.5, 7, 3, 7],
-      [1, 3, 4, 5, 6, 2]
-    ]
+    series: chartSeries
   };
-  new Chartist.Line('.ct-chart', data);
+
+  var dataMax = Chartist.getHighLow(data.series).high,
+      dataMin = Chartist.getHighLow(data.series).low,
+      divisor = 10,
+      total = Math.abs(dataMax) + Math.abs(dataMin),
+      stepReducer = total/divisor,
+      steps = [];
+
+  do {
+    steps.push(dataMax);
+    dataMax = dataMax - stepReducer;
+  } while (dataMax > dataMin);
+  steps.push(dataMin);
+
+  var options = {
+    'fullWidth': true,
+    'reverseData': true,
+    'height': '500px',
+    'width': '600px',
+    'chartPadding': {
+      'right': 40
+    },
+    'axisY': {
+      'type': Chartist.FixedScaleAxis,
+      'ticks': steps,
+      labelInterpolationFnc: function(value) {
+        return Chartist.roundWithPrecision(value, 2) + '%';
+      }
+    }
+  };
+  new Chartist.Line('.ct-chart', data, options);
 }
 
 function valore(values) {
