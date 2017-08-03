@@ -1,5 +1,4 @@
 import AppFilter from 'components/filter/app-filter.vue';
-import Chartist from 'chartist';
 import valuesService from 'services/valueSeries';
 import Vue from 'vue';
 
@@ -62,7 +61,7 @@ function seriesByDate(series, ibovespaLastMonth) {
   return reOrders;
 }
 
-function chartist(series) {
+function createChart(series) {
   var dates = series.map(serie => serie[0]);
   var chartSeries = [];
   series[0].forEach((serie, i) => {
@@ -82,37 +81,6 @@ function chartist(series) {
     labels: dates,
     series: chartSeries
   };
-
-  var dataMax = Chartist.getHighLow(data.series).high,
-      dataMin = Chartist.getHighLow(data.series).low,
-      divisor = 10,
-      total = Math.abs(dataMax) + Math.abs(dataMin),
-      stepReducer = total/divisor,
-      steps = [];
-
-  do {
-    steps.push(dataMax);
-    dataMax = dataMax - stepReducer;
-  } while (dataMax > dataMin);
-  steps.push(dataMin);
-
-  var options = {
-    'fullWidth': true,
-    'reverseData': true,
-    'height': '500px',
-    'width': '600px',
-    'chartPadding': {
-      'right': 40
-    },
-    'axisY': {
-      'type': Chartist.FixedScaleAxis,
-      'ticks': steps,
-      labelInterpolationFnc: function(value) {
-        return Chartist.roundWithPrecision(value, 2) + '%';
-      }
-    }
-  };
-  new Chartist.Line('.ct-chart', data, options);
 }
 
 function valore(values) {
