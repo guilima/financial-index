@@ -111,12 +111,18 @@ function createChart(series, names) {
     },
     xAxis: [{
       type : 'category',
+      name: 'Datas',
+      nameLocation: 'middle',
+      nameGap: 45,
       boundaryGap : false,
       inverse:  true,
       data : dates
     }],
     yAxis : [{
       type : 'value',
+      name: 'Índices',
+      nameGap: 45,
+      nameLocation: 'middle',
       min: 'dataMin',
       max: 'dataMax',
       axisLabel: {
