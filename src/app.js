@@ -72,6 +72,7 @@ function createChart(series, names) {
       console.log(chartSeries);
     chartSeries[i] = {
       name: copyNames[i],
+      icon: 'circle',
       type: 'line',
       data: []
     };
@@ -95,6 +96,11 @@ function createChart(series, names) {
   var option = {
     title: {
       text: ''
+    },
+    color: ['#9e0142','#d53e4f','#f46d43','#fdae61','#fee08b','#ffffbf','#e6f598','#abdda4','#66c2a5','#3288bd','#5e4fa2'],
+    grid: {
+      show: true,
+      backgroundColor: 'rgba(128, 128, 128, 0.2)'
     },
     tooltip: {
         trigger: 'axis',
