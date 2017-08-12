@@ -48,7 +48,7 @@ function seriesByDate(series, ibovespaLastMonth) {
     reOrders[index] = [];
     reOrders[index].push(date);
     series.forEach(serie => {
-      let itemValue = Number(serie.item[index].valor);
+      let itemValue = Number(serie.item[index].valor).toFixed(2);
       if (serie.ID == 7845) {
         let valNext = serie.item[index + 1] ? Number(serie.item[index + 1].valor) : Number(ibovespaLastMonth);
         let ibovespaPercentageValue = ibovespaToPercentage(itemValue, valNext);
