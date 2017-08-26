@@ -177,7 +177,7 @@ function valore(values) {
       case 433: return 'IPCA';
       case 189: return 'IGP-M';
       case 192: return 'INCC';
-      case 7845: return 'Ibovespa';
+      case 7832: return 'Ibovespa';
       default: return '';
     }
   });
