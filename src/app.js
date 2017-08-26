@@ -15,6 +15,7 @@ var vm = new Vue({
   },
   methods: {
     getValues(dateInitial, dateEnd) {
+      document.querySelector('.table-component').style.height = document.querySelector('.table-component > table').offsetHeight > 100 ? `${document.querySelector('.table-component > table').offsetHeight}px` : '366px';
       this.loading = true;
       valuesService.getValuesSeriesService(dateInitial, dateEnd)
         .then(function (values) {
@@ -23,6 +24,7 @@ var vm = new Vue({
         }).catch(function (err) {
           console.error('Augh, there was an error!', err);
         }).then(function () {
+          document.querySelector('.table-component').removeAttribute("style");
           vm.loading = false;
         });
     }
