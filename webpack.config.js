@@ -41,20 +41,6 @@ module.exports = {
   },
   devtool: process.env.NODE_ENV === 'product' ? 'source-map' : 'eval-source-map',
   plugins: [
-    new webpack.NamedModulesPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      mangle: true,
-      compress: {
-        warnings: false, // Suppress uglification warnings
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-      },
-      exclude: [/\.min\.js$/gi] // skip pre-minified libs
-    }),
+    new webpack.NamedModulesPlugin()
   ]
 };
