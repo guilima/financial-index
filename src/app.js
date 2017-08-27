@@ -69,9 +69,7 @@ function createChart(series, names) {
   var chartSeries = [];
   var copyNames = Vue.util.extend([], names); //ignore dates
   copyNames.unshift('dates');
-  console.log(names);
   series[0].forEach((serie, i) => {
-      console.log(chartSeries);
     chartSeries[i] = {
       name: copyNames[i],
       icon: 'circle',
@@ -84,18 +82,18 @@ function createChart(series, names) {
       if(serie[index] === '-') {
         chartSeries[index].data.push( null );
       } else {
-        chartSeries[index].data.push( Number( serie[index].replace('%','') ) );
+        chartSeries[index].data.push( Number( serie[index].replace('%','') ).toFixed(2) );
       }
     });
   });
   chartSeries.shift();
   // based on prepared DOM, initialize echarts instance
-  var myChart = echarts.init(document.getElementById('chart'));
+  const myChart = echarts.init( ( document.getElementById('chart') ) );
   window.onresize = function() {
     myChart.resize();
   };
   // specify chart configuration item and data
-  var option = {
+  let option = {
     title: {
       text: ''
     },
@@ -171,7 +169,7 @@ function valore(values) {
       ibovespaLastMonth = dataService[1],
       series = dataService[0].serie;
 
-  console.log(dataService, series);
+  //console.log(dataService, series);
 
   vm.names = series.map(serie => {
     switch (serie.ID) {

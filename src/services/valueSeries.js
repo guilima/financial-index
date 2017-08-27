@@ -1,7 +1,7 @@
 function getValuesSeriesService(dateI = '', dateE = '') {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
-    console.log(dateI, dateE);
+    //console.log(dateI, dateE);
     var dateInitial = dateI;
     var dateEnd = dateE;
     xhr.open('GET', `https://fintech-bcb.herokuapp.com/users?dateInitial=${dateInitial}&dateEnd=${dateEnd}`);
