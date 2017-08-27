@@ -8,9 +8,8 @@
     "url": "https://github.com/guilima/financials-index.git"
   },
   "scripts": {
-    "prod": "webpack --hide-modules",
-    "dev2": "webpack-dev-server --progress --colors --open --hot",
-    "dev": "webpack --hide-modules --watch --display-error-details"
+    "prod": "NODE_ENV=product webpack --hide-modules",
+    "dev": "NODE_ENV=development webpack-dev-server --progress --colors --open --hot"
   },
   "dependencies": {
     "echarts": "^3.6.2",
@@ -18,6 +17,9 @@
     "vue-resource": "^1.3.4"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
     "css-loader": "^0.28.4",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
