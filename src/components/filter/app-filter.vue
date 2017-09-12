@@ -1,50 +1,72 @@
 <template>
   <div>
-    <!-- <filter-date @dates="fetchValue"></filter-date> -->
-    <filter-date label="Inicial" v-model="dateInitial"></filter-date>
-    <filter-date label="Final" v-model="dateEnd"></filter-date>
+    <datepicker
+      v-model="dateInitial"
+      :format="'dd/MM/yyyy'"
+      :name="'Inicio'"
+      :language="'pt-br'"
+      placeholder="dd/mm/aaaa"
+      wrapper-class="ui labeled input"
+      :disabled="{to: new Date(1973, 0, 5), from: new Date()}">
+    </datepicker>
+    <datepicker
+      @keyup="dateEnd = new Date()"
+      v-model="dateEnd"
+      :format="'dd/MM/yyyy'"
+      :name="'Final'"
+      :language="'pt-br'"
+      placeholder="dd/mm/aaaa"
+      wrapper-class="ui labeled input"
+      :disabled="{to: dateInitial ? new Date(dateInitial) : new Date(1973, 0, 5), from: new Date()}">
+    </datepicker>
     <button class="ui primary button"
       type="button"
-      :disabled="isDisabled"
-      @click="onChange('28/'+dateInitial,'28/'+dateEnd)">
+      :disabled="isDisabled || isLoading"
+      @click="$emit('update', formattedDate(dateInitial), formattedDate(dateEnd))">
       Atualizar data
     </button>
   </div>
 </template>
 
 <script>
-import FilterDate from 'components/filter/filter-date.vue';
+import Datepicker from 'vuejs-datepicker';
 export default {
   data: () => ({
     dateInitial: '',
     dateEnd: ''
   }),
   props: {
-    'isLoading': Boolean
+    isLoading: Boolean
   },
   components: {
-    FilterDate
+    Datepicker
   },
   methods: {
-    onChange (values, values2) {
-      this.$emit('update', values, values2)
+    formattedDate: function (date) {
+      // dd/mm/yyyy
+      return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+    },
+    aloha: function() {
+      console.log(this.dateEnd);
     }
   },
   computed: {
     isDisabled: function () {
       // evaluate whatever you need to determine disabled here...
-      if (/^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateInitial) &&
-        /^(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.dateEnd) &&
-        this.dateEnd.split('/').reverse().join('') > this.dateInitial.split('/').reverse().join('') &&
-        this.dateEnd.split('/')[1] <= new Date().getFullYear()  &&
-        !this.isLoading) {
+      if(!this.dateInitial || !this.dateEnd)
+        return true;
+      if (/^([1-2][0-9]|3[0-1]|0[1-9]|\d)\/(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.formattedDate(this.dateInitial)) &&
+        /^([1-2][0-9]|3[0-1]|0[1-9]|\d)\/(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.formattedDate(this.dateEnd)) &&
+        this.formattedDate(this.dateEnd).split('/').reverse().join('') > this.formattedDate(this.dateInitial).split('/').reverse().join('') &&
+        this.dateEnd.getFullYear() <= new Date().getFullYear()) {
 
         return false;
       } else {
 
         return true;
       }
-    }
+    },
+
   }
 };
 </script>
