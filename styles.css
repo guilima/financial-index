@@ -367,3 +367,6 @@ h4.ui.header {
 .vdp-datepicker.ui.labeled.input > div {
   font-size: 0;
 }
+.vdp-datepicker.ui.labeled.input .vdp-datepicker__calendar {
+ font-size: 14px;
+}
