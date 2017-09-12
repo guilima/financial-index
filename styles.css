@@ -92,6 +92,7 @@ td{
 /* ui semantic */
 .ui.primary.button {
   box-shadow: 0 0 0 0 rgba(34,36,38,.15) inset;
+  vertical-align: sub;
 }
 
 .ui.primary.button, .ui.primary.buttons .button {
@@ -176,6 +177,7 @@ td{
   -webkit-transition: box-shadow .1s ease,border-color .1s ease;
   transition: box-shadow .1s ease,border-color .1s ease;
   box-shadow: none;
+  vertical-align: middle;
 }
 
 .ui.labeled.input:not([class*="corner labeled"]) .label {
@@ -194,6 +196,8 @@ td{
   flex: 0 0 auto;
   margin: 0;
   font-size: 1em;
+  font-size: 14px;
+  vertical-align: middle;
 }
 
 .ui.label:first-child {
@@ -357,4 +361,9 @@ h4.ui.header {
     transform: perspective(140px) rotateY(180deg);
     opacity: 0;
   }
+}
+
+.vdp-datepicker__calendar { top: 100%; }
+.vdp-datepicker.ui.labeled.input > div {
+  font-size: 0;
 }
