@@ -1,7 +1,11 @@
+
+import Vue from 'vue';
+const EventBus = new Vue();
+export default EventBus;
 import AppFilter from 'components/filter/app-filter.vue';
 import FilterSeries from 'components/filter/filter-series.vue';
 import valuesService from 'services/valueSeries';
-import Vue from 'vue';
+
 import echarts from 'echarts/dist/echarts.common.js';
 
 var vm = new Vue({
@@ -16,10 +20,11 @@ var vm = new Vue({
     FilterSeries
   },
   methods: {
-    getValues(dateInitial, dateEnd, series = '') {
+    getValues2(dateInitial= '', dateEnd= '', series = '') {
       document.querySelector('.table-component').style.height = document.querySelector('.table-component > table').offsetHeight > 100 ? `${document.querySelector('.table-component > table').offsetHeight}px` : '366px';
       this.loading = true;
-      valuesService.getValuesSeriesService(dateInitial, dateEnd, series)
+      var a = series === '' ? series : JSON.stringify(series);
+      valuesService.getValuesSeriesService(dateInitial, dateEnd, a)
         .then(function (values) {
           valore(values);
           console.log('Success');
@@ -31,7 +36,7 @@ var vm = new Vue({
         });
     }
   },
-  mounted: function () { this.getValues(); },
+  mounted: function () { this.getValues2(); },
 });
 
 function ibovespaToPercentage(val, valNext) {
@@ -89,6 +94,33 @@ function createChart(series, names) {
     });
   });
   chartSeries.shift();
+  chartSeries.push(
+    {
+      name: null,
+      icon: 'circle',
+      type: 'line',
+      data: []
+    },
+    {
+      name: null,
+      icon: 'circle',
+      type: 'line',
+      data: []
+    },
+    {
+      name: null,
+      icon: 'circle',
+      type: 'line',
+      data: []
+    },
+    {
+      name: null,
+      icon: 'circle',
+      type: 'line',
+      data: []
+    }
+  );
+  console.log(chartSeries);
   // based on prepared DOM, initialize echarts instance
   const myChart = echarts.init( ( document.getElementById('chart') ) );
   window.onresize = function() {
@@ -180,6 +212,9 @@ function valore(values) {
       case 189: return 'IGP-M';
       case 192: return 'INCC';
       case 7832: return 'Ibovespa';
+      case 7830: return 'Ouro';
+      case 196: return 'Poupança';
+      case 4390: return 'SELIC';
       default: return '';
     }
   });

@@ -22,18 +22,19 @@
     <button class="ui primary button"
       type="button"
       :disabled="isDisabled || isLoading"
-      @click="$emit('update', formattedDate(dateInitial), formattedDate(dateEnd))">
+      v-on:click="senDate()">
       Atualizar data
     </button>
   </div>
 </template>
 
 <script>
+import EventBus from 'app';
 import Datepicker from 'vuejs-datepicker';
 export default {
   data: () => ({
-    dateInitial: '',
-    dateEnd: ''
+    dateInitial: new Date(new Date().setMonth(new Date().getMonth() - 6)),
+    dateEnd: new Date(new Date().setMonth(new Date().getMonth() - 1))
   }),
   props: {
     isLoading: Boolean
@@ -45,6 +46,9 @@ export default {
     formattedDate: function (date) {
       // dd/mm/yyyy
       return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+    },
+    senDate: function() {
+      EventBus.$emit('updatex', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd));
     }
   },
   computed: {
@@ -63,7 +67,11 @@ export default {
         return true;
       }
     },
-
-  }
+  },
+  created: function () {
+    EventBus.$on('updatex2', (series) =>
+      this.$emit('updatex2', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd), series )
+    );
+  },
 };
 </script>

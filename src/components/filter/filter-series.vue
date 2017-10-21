@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import EventBus from 'app';
 export default {
   data: () => ({
     series: [
@@ -60,8 +61,7 @@ export default {
         'code': 4390,
         'active': false
       },
-    ],
-    activieSeries: []
+    ]
   }),
   props: {
     isLoading: Boolean
@@ -72,15 +72,17 @@ export default {
     },
     clickSerie: function(serie) {
       serie.active = !serie.active;
-      this.$emit('update', this.activeSeriesCode());
+      EventBus.$emit('updatex2', this.activeSeriesCode());
     },
     hasSeriesActived: function() {
       return this.activeSeriesCode().length === this.series.length
     }
   },
   created: function () {
-    this.$emit('update', this.activeSeriesCode());
-  },
+    EventBus.$on( 'updatex', (startDate, endDate) =>
+      this.$emit('updatex', startDate, endDate, this.activeSeriesCode() )
+    );
+  }
 };
 </script>
 
