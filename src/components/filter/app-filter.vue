@@ -45,9 +45,6 @@ export default {
     formattedDate: function (date) {
       // dd/mm/yyyy
       return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
-    },
-    aloha: function() {
-      console.log(this.dateEnd);
     }
   },
   computed: {
