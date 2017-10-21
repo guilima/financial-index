@@ -16,6 +16,10 @@
           @update="getValues"
           :is-loading="loading">
         </app-filter>
+        <filter-series
+          @update=""
+          :is-loading="loading">
+        </filter-series>
         <div class="table-component">
           <div class="sk-folding-cube" v-show="loading">
             <div class="sk-cube1 sk-cube"></div>

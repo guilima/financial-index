@@ -1,4 +1,5 @@
 import AppFilter from 'components/filter/app-filter.vue';
+import FilterSeries from 'components/filter/filter-series.vue';
 import valuesService from 'services/valueSeries';
 import Vue from 'vue';
 import echarts from 'echarts/dist/echarts.common.js';
@@ -11,13 +12,14 @@ var vm = new Vue({
     loading: true
   },
   components: {
-    AppFilter
+    AppFilter,
+    FilterSeries
   },
   methods: {
-    getValues(dateInitial, dateEnd) {
+    getValues(dateInitial, dateEnd, series = '') {
       document.querySelector('.table-component').style.height = document.querySelector('.table-component > table').offsetHeight > 100 ? `${document.querySelector('.table-component > table').offsetHeight}px` : '366px';
       this.loading = true;
-      valuesService.getValuesSeriesService(dateInitial, dateEnd)
+      valuesService.getValuesSeriesService(dateInitial, dateEnd, series)
         .then(function (values) {
           valore(values);
           console.log('Success');
