@@ -44,20 +44,15 @@ function numberFormatter (value) {
   return `${value}%`;
 }
 
-function seriesByDate(series, ibovespaLastMonth) {
-  var reOrders = [],
-      allDates = series[0].item.map((item, index) => item.data);
-
-  allDates.forEach((date, index) => {
-    reOrders[index] = [];
-    reOrders[index].push(date);
-    series.forEach(serie => {
+function seriesByDate(series) {
+  var allDates = series[0].item.map(item => item.data);
+  return allDates.map((date, index) =>
+    [date, ...series.map( serie => {
       let itemValue = Number(serie.item[index].valor).toFixed(2);
-        itemValue = numberFormatter(itemValue);
-      reOrders[index].push(itemValue);
-    });
-  });
-  return reOrders;
+      itemValue = numberFormatter(itemValue);
+      return itemValue;
+    })]
+  );
 }
 
 function createChart(series, names) {
