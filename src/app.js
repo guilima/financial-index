@@ -39,11 +39,6 @@ var vm = new Vue({
   mounted: function () { this.getValues2(); },
 });
 
-function ibovespaToPercentage(val, valNext) {
-  var percentage = (- ((valNext * 100) / val) + 100).toFixed(2);
-  return percentage;
-}
-
 function numberFormatter (value) {
   if(!isFinite(value) || value == 0) return '-';
   return `${value}%`;
@@ -58,13 +53,7 @@ function seriesByDate(series, ibovespaLastMonth) {
     reOrders[index].push(date);
     series.forEach(serie => {
       let itemValue = Number(serie.item[index].valor).toFixed(2);
-      if (serie.ID == 7845) {
-        let valNext = serie.item[index + 1] ? Number(serie.item[index + 1].valor) : Number(ibovespaLastMonth);
-        let ibovespaPercentageValue = ibovespaToPercentage(itemValue, valNext);
-        itemValue = numberFormatter(ibovespaPercentageValue);
-      } else {
         itemValue = numberFormatter(itemValue);
-      }
       reOrders[index].push(itemValue);
     });
   });
@@ -200,10 +189,7 @@ function createChart(series, names) {
 
 function valore(values) {
   var dataService = JSON.parse(values),
-      ibovespaLastMonth = dataService[1],
       series = dataService[0].serie;
-
-  //console.log(dataService, series);
 
   vm.names = series.map(serie => {
     switch (serie.ID) {
@@ -218,6 +204,6 @@ function valore(values) {
       default: return '';
     }
   });
-  vm.series = seriesByDate(series, ibovespaLastMonth);
+  vm.series = seriesByDate(series);
   createChart(vm.series, vm.names);
 }
