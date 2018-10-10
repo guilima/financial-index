@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prod": "NODE_ENV=product webpack -p --hide-modules",
-    "dev": "NODE_ENV=development webpack-dev-server --progress --colors --open --hot"
+    "start": "NODE_ENV=development webpack-dev-server --progress --colors --open --hot"
   },
   "dependencies": {
     "echarts": "^3.7.2",
