@@ -20,18 +20,19 @@ var vm = new Vue({
     FilterSeries
   },
   methods: {
-    getValues2(dateInitial= '', dateEnd= '', series = '') {
-      document.querySelector('.table-component').style.height = document.querySelector('.table-component > table').offsetHeight > 100 ? `${document.querySelector('.table-component > table').offsetHeight}px` : '366px';
+    getValues2(dateInitial, dateEnd, series) {
+      const componentTable = document.querySelector('.table-component');
+      const elemTable = componentTable.children.item(1);
+      componentTable.style.height = elemTable > 100 ? `${elemTable.offsetHeight}px` : '366px';
       this.loading = true;
-      var a = series === '' ? series : JSON.stringify(series);
-      valuesService.getValuesSeriesService(dateInitial, dateEnd, a)
+      valuesService.getValuesSeriesService(dateInitial, dateEnd, JSON.stringify(series))
         .then(function (values) {
           valore(values);
           console.log('Success');
         }).catch(function (err) {
           console.error('Augh, there was an error!', err);
         }).then(function () {
-          document.querySelector('.table-component').removeAttribute("style");
+          componentTable.removeAttribute("style");
           vm.loading = false;
         });
     }
@@ -39,28 +40,23 @@ var vm = new Vue({
   mounted: function () { this.getValues2(); },
 });
 
-function numberFormatter (value) {
-  if(!isFinite(value) || value == 0) return '-';
-  return `${value}%`;
+function numberAddPercentage (value) {
+  return value ? `${value}%` : '-';
 }
 
 function seriesByDate(series) {
   var allDates = series[0].item.map(item => item.data);
   return allDates.map((date, index) =>
-    [date, ...series.map( serie => {
-      let itemValue = Number(serie.item[index].valor).toFixed(2);
-      itemValue = numberFormatter(itemValue);
-      return itemValue;
-    })]
+    [date, ...series.map( serie => numberAddPercentage(serie.item[index].valor) )]
   );
 }
 
 function createChart(series, names) {
   var dates = series.map(serie => serie[0]);
   var chartSeries = [];
-  var copyNames = Vue.util.extend([], names); //ignore dates
+  var copyNames = Object.assign([], names); //ignore dates
   copyNames.unshift('dates');
-  series[0].forEach((serie, i) => {
+  series[0].forEach((_, i) => {
     chartSeries[i] = {
       name: copyNames[i],
       icon: 'circle',
