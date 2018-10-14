@@ -52,55 +52,34 @@ function seriesByDate(series) {
 }
 
 function createChart(series, names) {
-  var dates = series.map(serie => serie[0]);
-  var chartSeries = [];
-  var copyNames = Object.assign([], names); //ignore dates
-  copyNames.unshift('dates');
-  series[0].forEach((_, i) => {
-    chartSeries[i] = {
-      name: copyNames[i],
+  const dates = series.map(serie => serie[0]);
+  const colors = {
+    'CDI': '#A75A4C',
+    'IPCA': '#E6B8D5',
+    'IGP-M': '#E8875F',
+    'INCC': '#BC9440',
+    'Ibovespa': '#5A87A5',
+    'Ouro': '#FEE08B',
+    'Poupança': '#4C9D6E',
+    'SELIC': '#FFFFBF',
+    'default': '#8E7298'
+  };
+  const chartSeries = names.map((name, i) => {
+    return {
+      name: name,
       icon: 'circle',
       type: 'line',
-      data: []
-    };
-  });
-  series.forEach((serie, i) => {
-    serie.forEach((value,index) => {
-      if(serie[index] === '-') {
-        chartSeries[index].data.push( null );
-      } else {
-        chartSeries[index].data.push( Number( serie[index].replace('%','') ).toFixed(2) );
-      }
-    });
-  });
-  chartSeries.shift();
-  chartSeries.push(
-    {
-      name: null,
-      icon: 'circle',
-      type: 'line',
-      data: []
-    },
-    {
-      name: null,
-      icon: 'circle',
-      type: 'line',
-      data: []
-    },
-    {
-      name: null,
-      icon: 'circle',
-      type: 'line',
-      data: []
-    },
-    {
-      name: null,
-      icon: 'circle',
-      type: 'line',
-      data: []
+      "itemStyle": {
+        "normal": {
+            "color": colors[name] || colors.default
+        }
+      },
+      data: series.map(serie => serie[i + 1] === '-' ?
+        null
+        : Number( serie[i + 1].replace('%','') ).toFixed(2))
     }
-  );
-  console.log(chartSeries);
+  });
+
   // based on prepared DOM, initialize echarts instance
   const myChart = echarts.init( ( document.getElementById('chart') ) );
   window.onresize = function() {
@@ -111,7 +90,6 @@ function createChart(series, names) {
     title: {
       text: ''
     },
-    color: ['#9e0142','#d53e4f','#f46d43','#fdae61','#fee08b','#ffffbf','#e6f598','#abdda4','#66c2a5','#3288bd','#5e4fa2'],
     grid: {
       height: '70%',
       show: true,
@@ -175,7 +153,7 @@ function createChart(series, names) {
   };
 
   // use configuration item and data specified to show chart
-  myChart.setOption(option);
+  myChart.setOption(option, true);
 }
 
 function valore(values) {
