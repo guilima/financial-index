@@ -27,7 +27,23 @@ var vm = new Vue({
       this.loading = true;
       valuesService.getValuesSeriesService(dateInitial, dateEnd, JSON.stringify(series))
         .then(function (values) {
-          valore(values);
+          const series = JSON.parse(values)[0].serie;
+
+          vm.names = series.map(serie => {
+            switch (serie.ID) {
+              case 4391: return 'CDI';
+              case 433: return 'IPCA';
+              case 189: return 'IGP-M';
+              case 192: return 'INCC';
+              case 7832: return 'Ibovespa';
+              case 7830: return 'Ouro';
+              case 196: return 'Poupança';
+              case 4390: return 'SELIC';
+              default: return '';
+            }
+          });
+          vm.series = seriesByDate(series);
+          createChart(vm.series, vm.names);
           console.log('Success');
         }).catch(function (err) {
           console.error('Augh, there was an error!', err);
@@ -153,25 +169,4 @@ function createChart(series, names) {
 
   // use configuration item and data specified to show chart
   myChart.setOption(option, true);
-}
-
-function valore(values) {
-  var dataService = JSON.parse(values),
-      series = dataService[0].serie;
-
-  vm.names = series.map(serie => {
-    switch (serie.ID) {
-      case 4391: return 'CDI';
-      case 433: return 'IPCA';
-      case 189: return 'IGP-M';
-      case 192: return 'INCC';
-      case 7832: return 'Ibovespa';
-      case 7830: return 'Ouro';
-      case 196: return 'Poupança';
-      case 4390: return 'SELIC';
-      default: return '';
-    }
-  });
-  vm.series = seriesByDate(series);
-  createChart(vm.series, vm.names);
 }
