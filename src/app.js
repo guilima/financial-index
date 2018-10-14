@@ -98,10 +98,9 @@ function createChart(series, names) {
     tooltip: {
         trigger: 'axis',
         formatter: function (params, ticket, callback) {
-          let formattedText = params.map(param => {
-            if(param.value === undefined) param.value = '-';
-            return `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${param.color};"></span>${param.seriesName}: ${param.value}%`;
-          });
+          let formattedText = params.sort((a, b) => b.data - a.data).map(param =>
+            `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${param.color};"></span>${param.seriesName}: ${numberAddPercentage(param.data)}`
+          );
           return `${params[0].name}<br>${formattedText.join('<br>')}`;
         }
     },
