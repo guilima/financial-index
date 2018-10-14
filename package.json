@@ -12,7 +12,7 @@
     "start": "NODE_ENV=development webpack-dev-server --progress --colors --open --hot"
   },
   "dependencies": {
-    "echarts": "^3.7.2",
+    "echarts": "^4.1.0",
     "vue": "^2.4.2",
     "vue-resource": "^1.3.4",
     "vuejs-datepicker": "git+ssh://git@github.com/guilima/vuejs-datepicker.git"
