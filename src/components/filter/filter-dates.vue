@@ -48,29 +48,33 @@ export default {
       return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
     },
     senDate: function() {
-      EventBus.$emit('updatex', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd));
+      EventBus.$emit('update-dates', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd));
     }
   },
   computed: {
     isDisabled: function () {
-      // evaluate whatever you need to determine disabled here...
-      if(!this.dateInitial || !this.dateEnd)
+      if(!this.dateInitial || !this.dateEnd) {
         return true;
-      if (/^([1-2][0-9]|3[0-1]|0[1-9]|\d)\/(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.formattedDate(this.dateInitial)) &&
-        /^([1-2][0-9]|3[0-1]|0[1-9]|\d)\/(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(this.formattedDate(this.dateEnd)) &&
-        this.formattedDate(this.dateEnd).split('/').reverse().join('') > this.formattedDate(this.dateInitial).split('/').reverse().join('') &&
-        this.dateEnd.getFullYear() <= new Date().getFullYear()) {
+      }
+      const dateInitial = this.formattedDate(this.dateInitial);
+      const dateEnd = this.formattedDate(this.dateEnd);
+      const isDateFormatted = (date) => /^([1-2][0-9]|3[0-1]|0[1-9]|\d)\/(1[0-2]|0[1-9]|\d)\/(20\d{2}|19\d{2})$/.test(date);
+      const isDateEndAfterInitial = this.dateEnd.getTime() >= this.dateInitial.getTime();
+      const isDateEndBeforeToday = this.dateEnd.getTime() <= new Date().getTime();
 
+      if (isDateFormatted(dateInitial) &&
+          isDateFormatted(dateEnd) &&
+          isDateEndAfterInitial &&
+          isDateEndBeforeToday) {
         return false;
       } else {
-
         return true;
       }
     },
   },
   created: function () {
-    EventBus.$on('updatex2', (series) =>
-      this.$emit('updatex2', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd), series )
+    EventBus.$on('update-series', (series) =>
+      this.$emit('update-financial', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd), series )
     );
   },
 };

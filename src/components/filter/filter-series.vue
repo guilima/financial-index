@@ -1,13 +1,21 @@
 <template>
   <div class="series-picker">
     <ul class="series list">
-      <li class="serie active" v-for="(serie, index) in series" v-if="serie.active" v-on:click="clickSerie(serie)">
+      <li class="serie active"
+        v-for="(serie, index) in series"
+        v-if="serie.active"
+        :key="index"
+        v-on:click="clickSerie(serie)">
         {{ serie.name }}
       </li>
-      <li class="serie add" v-if="!hasSeriesActived()">
+      <li class="serie add"
+        v-if="!hasSeriesActived()">
         adicionar +
         <ul class="list">
-          <li class="serie" v-for="(serie, index) in series" v-if="!serie.active" v-on:click="clickSerie(serie)">
+          <li class="serie"
+            v-for="(serie, index) in series" v-if="!serie.active"
+            :key="index"
+            v-on:click="clickSerie(serie)">
             {{ serie.name }}
           </li>
         </ul>
@@ -63,24 +71,21 @@ export default {
       },
     ]
   }),
-  props: {
-    isLoading: Boolean
-  },
   methods: {
     activeSeriesCode: function () {
       return this.series.filter( serie => serie.active ).map( serie => serie.code );
     },
     clickSerie: function(serie) {
       serie.active = !serie.active;
-      EventBus.$emit('updatex2', this.activeSeriesCode());
+      EventBus.$emit('update-series', this.activeSeriesCode());
     },
     hasSeriesActived: function() {
       return this.activeSeriesCode().length === this.series.length
     }
   },
   created: function () {
-    EventBus.$on( 'updatex', (startDate, endDate) =>
-      this.$emit('updatex', startDate, endDate, this.activeSeriesCode() )
+    EventBus.$on( 'update-dates', (startDate, endDate) =>
+      this.$emit('update-financial', startDate, endDate, this.activeSeriesCode() )
     );
   }
 };

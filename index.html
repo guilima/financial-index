@@ -10,15 +10,14 @@
   <body>
     <section>
       <h1>Índices Financeiros</h1>
-      <div id="app-4">
+      <div id="app">
         <h4 class="ui dividing header">Filtros</h4>
-        <app-filter
-          @updatex2="getValues2"
+        <filter-dates
+          @update-financial="getValuesSeries"
           :is-loading="loading">
-        </app-filter>
+        </filter-dates>
         <filter-series
-          @updatex="getValues2"
-          :is-loading="loading">
+          @update-financial="getValuesSeries">
         </filter-series>
         <div class="table-component">
           <div class="sk-folding-cube" v-show="loading">

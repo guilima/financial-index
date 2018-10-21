@@ -2,25 +2,25 @@
 import Vue from 'vue';
 const EventBus = new Vue();
 export default EventBus;
-import AppFilter from 'components/filter/app-filter.vue';
+import FilterDates from 'components/filter/filter-dates.vue';
 import FilterSeries from 'components/filter/filter-series.vue';
 import valuesService from 'services/valueSeries';
 
 import echarts from 'echarts/dist/echarts.common.js';
 
 var vm = new Vue({
-  el: '#app-4',
+  el: '#app',
   data: {
     names: [],
     series: [],
     loading: true
   },
   components: {
-    AppFilter,
+    FilterDates,
     FilterSeries
   },
   methods: {
-    getValues2(dateInitial, dateEnd, series) {
+    getValuesSeries(dateInitial, dateEnd, series) {
       const componentTable = document.querySelector('.table-component');
       const elemTable = componentTable.children.item(1);
       componentTable.style.height = elemTable > 100 ? `${elemTable.offsetHeight}px` : '366px';
@@ -53,7 +53,7 @@ var vm = new Vue({
         });
     }
   },
-  mounted: function () { this.getValues2(); },
+  mounted: function () { this.getValuesSeries(); },
 });
 
 function numberAddPercentage (value) {
