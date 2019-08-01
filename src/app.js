@@ -53,7 +53,11 @@ var vm = new Vue({
         });
     }
   },
-  mounted: function () { this.getValuesSeries(); },
+  mounted: function () { 
+    const [lmonth, lday, lyear] = new Date(new Date().setMonth(new Date().getMonth() - 6)).toLocaleString('en-US', {"year":"numeric",'month':"2-digit",'day': "2-digit"}).split("/");
+    const [month, day, year] = new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString('en-US', {"year":"numeric",'month':"2-digit",'day': "2-digit"}).split("/");
+    this.getValuesSeries(`${lyear}-${lmonth}-${lday}`, `${year}-${month}-${day}`, [4391,433,189,192,7832]);
+  },
 });
 
 function numberAddPercentage (value) {

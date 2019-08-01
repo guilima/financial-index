@@ -43,12 +43,12 @@ export default {
     Datepicker
   },
   methods: {
-    formattedDate: function (date) {
-      // dd/mm/yyyy
-      return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+    formattedDate: function (date, type) {
+      const [month, day, year] = new Date(date).toLocaleString('en-US', {"year":"numeric",'month':"2-digit",'day': "2-digit"}).split("/");
+      return type == 'ISO8601' ? `${year}-${month}-${day}` : `${day}/${month}/${year}`;
     },
     senDate: function() {
-      EventBus.$emit('update-dates', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd));
+      EventBus.$emit('update-dates', this.formattedDate(this.dateInitial, 'ISO8601'), this.formattedDate(this.dateEnd, 'ISO8601'));
     }
   },
   computed: {
