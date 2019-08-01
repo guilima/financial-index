@@ -36,7 +36,7 @@ module.exports = {
     alias: { vue: 'vue/dist/vue.esm.js' }
   },
   devServer: {
-    host: 'local.financial.index',
+    host: 'localhost',
     port: 8082
   },
   devtool: process.env.NODE_ENV === 'product' ? 'source-map' : 'eval-source-map',
