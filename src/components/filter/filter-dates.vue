@@ -74,7 +74,7 @@ export default {
   },
   created: function () {
     EventBus.$on('update-series', (series) =>
-      this.$emit('update-financial', this.formattedDate(this.dateInitial), this.formattedDate(this.dateEnd), series )
+      this.$emit('update-financial', this.formattedDate(this.dateInitial,  'ISO8601'), this.formattedDate(this.dateEnd,  'ISO8601'), series )
     );
   },
 };
