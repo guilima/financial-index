@@ -2,18 +2,17 @@
   <div class="series-picker">
     <ul class="series list">
       <li class="serie active"
-        v-for="(serie, index) in series"
-        v-if="serie.active"
+        v-for="(serie, index) in activeSeries"
         :key="index"
         v-on:click="clickSerie(serie)">
         {{ serie.name }}
       </li>
       <li class="serie add"
-        v-if="!hasSeriesActived()">
+        v-if="inactiveSeries.length > 0">
         adicionar +
         <ul class="list">
           <li class="serie"
-            v-for="(serie, index) in series" v-if="!serie.active"
+            v-for="(serie, index) in inactiveSeries"
             :key="index"
             v-on:click="clickSerie(serie)">
             {{ serie.name }}
@@ -72,21 +71,26 @@ export default {
     ]
   }),
   methods: {
-    activeSeriesCode: function () {
-      return this.series.filter( serie => serie.active ).map( serie => serie.code );
-    },
     clickSerie: function(serie) {
       serie.active = !serie.active;
-      EventBus.$emit('update-series', this.activeSeriesCode());
-    },
-    hasSeriesActived: function() {
-      return this.activeSeriesCode().length === this.series.length
+      EventBus.$emit('update-series', this.activeSeriesCode);
     }
   },
   created: function () {
     EventBus.$on( 'update-dates', (startDate, endDate) =>
-      this.$emit('update-financial', startDate, endDate, this.activeSeriesCode() )
+      this.$emit('update-financial', startDate, endDate, this.activeSeriesCode )
     );
+  },
+  computed: {
+    activeSeries: function () {
+      return this.series.filter( serie => serie.active );
+    },
+    inactiveSeries: function () {
+      return this.series.filter( serie => !serie.active );
+    },
+    activeSeriesCode: function () {
+      return this.activeSeries.map( serie => serie.code );
+    }
   }
 };
 </script>
