@@ -1,17 +1,19 @@
-const webpack = require('webpack');
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-var proxyURL = 'http://local.financial.indexs'; // Your external HTML server
-var proxy = {
-  '*': { target: proxyURL }
-};
-
-module.exports = {
+module.exports = (_, argv) => ({
   entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
     filename: 'app.bundle.js'
+  },
+  optimization: {
+    minimizer: [new TerserJSPlugin({extractComments: false}), new OptimizeCSSAssetsPlugin({})],
   },
   module: {
     rules: [
@@ -20,9 +22,18 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            'scss': 'vue-style-loader!css-loader!sass-loader'
+            scss: 'vue-style-loader!css-loader!sass-loader'
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          argv.mode === 'production' ?
+          MiniCssExtractPlugin.loader :
+          'vue-style-loader',
+          'css-loader'
+        ]
       },
       {
         test: /\.js$/,
@@ -39,8 +50,11 @@ module.exports = {
     host: 'localhost',
     port: 8082
   },
-  devtool: process.env.NODE_ENV === 'product' ? 'source-map' : 'eval-source-map',
   plugins: [
-    new webpack.NamedModulesPlugin()
+    new Dotenv(),
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'style.css'
+    })
   ]
-};
+});
