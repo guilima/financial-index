@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import styles from '../../styles.module.css';
 import EventBus from 'app';
 import Datepicker from 'vuejs-datepicker';
 export default {
