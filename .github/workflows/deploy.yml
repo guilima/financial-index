@@ -36,12 +36,10 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: node_modules
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
     - name: Install npm dependencies
       run: npm install
 
@@ -53,10 +51,10 @@ jobs:
         echo ${{ github.ref }}
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -am "ci(dist): Automated bundle deploy"
+        git add .
+        git commit -m "ci(dist): Automated bundle deploy" -a
     - name: Push changes
       uses: ad-m/github-push-action@v0.5.0
       with:
-        fetch-depth: 0
         branch: release/connection
         github_token: ${{ secrets.GITHUB_TOKEN }}
