@@ -47,3 +47,14 @@ jobs:
 
     - name: Bundle assets .js and .css
       run: npm run build
+
+    - name: Commit files
+      run: |
+        echo ${{ github.ref }}
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit --am "ci(dist): Automated bundle deploy"
+    - name: Push changes
+      uses: ad-m/github-push-action@release/connection
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
