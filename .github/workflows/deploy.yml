@@ -53,8 +53,10 @@ jobs:
         echo ${{ github.ref }}
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit --am "ci(dist): Automated bundle deploy"
+        git commit -am "ci(dist): Automated bundle deploy"
     - name: Push changes
       uses: ad-m/github-push-action@v0.5.0
       with:
+        fetch-depth: 0
+        branch: release/connection
         github_token: ${{ secrets.GITHUB_TOKEN }}
