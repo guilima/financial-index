@@ -19,6 +19,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - uses: webfactory/ssh-agent@v0.2.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
@@ -27,7 +30,7 @@ jobs:
       run: echo Set environment variables $VUE_APP_API
       env:
         VUE_APP_API: https://fintech-backend.herokuapp.com
-    
+
     # Runs a single command using the runners shell
     - name: Bundle assets .js and .css
       run: |
