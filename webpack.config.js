@@ -3,6 +3,7 @@ const Dotenv = require('dotenv-webpack');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -63,8 +64,9 @@ module.exports = (_, argv) => ({
     publicPath: '/dist/'
   },
   plugins: [
-    new Dotenv({systemvars: argv.mode === 'production'}),
+    new Dotenv(),
     new VueLoaderPlugin(),
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './index.ejs',
       title: 'Indíces de valores financiais',
