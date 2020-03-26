@@ -64,7 +64,9 @@ module.exports = (_, argv) => ({
     publicPath: '/dist/'
   },
   plugins: [
-    new Dotenv(),
+    new Dotenv({
+      path: argv.mode === 'development' ? './.env.example' : './.env'
+    }),
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
