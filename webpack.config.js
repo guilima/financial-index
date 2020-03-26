@@ -1,5 +1,6 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -51,7 +52,7 @@ module.exports = (_, argv) => ({
     port: 8082
   },
   plugins: [
-    new Dotenv(),
+    new Dotenv({systemvars: argv.mode === 'production'}),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: 'style.css'
