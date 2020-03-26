@@ -27,7 +27,7 @@ jobs:
       
     # Environmnet variables
     - name: Environmnet variables
-      run: echo Set environment variables $VUE_APP_API
+      run: echo Set environment variables $VUE_APP_API not working with dotenv-webpack, using .env
       env:
         VUE_APP_API: https://fintech-backend.herokuapp.com
         cache-name: cache-node-modules
