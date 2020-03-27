@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -65,9 +64,7 @@ module.exports = (_, argv) => ({
     publicPath: '/dist/'
   },
   plugins: [
-    argv.mode !== 'production' ?
-    new Dotenv() :
-    new webpack.EnvironmentPlugin(['VUE_APP_API']),
+    new Dotenv({systemvars: argv.mode === 'production'}),
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({

@@ -4,11 +4,7 @@ name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,9 +23,8 @@ jobs:
       
     # Environmnet variables
     - name: Environmnet variables
-      run: echo Set environment variables $VUE_APP_API not working with dotenv-webpack, using .env
+      run: echo Set environment variables not working with dotenv-webpack, using Bundle assets .js and .css run
       env:
-        VUE_APP_API: https://fintech-backend.herokuapp.com
         cache-name: cache-node-modules
 
     # Runs a single command using the runners shell
@@ -44,7 +39,7 @@ jobs:
       run: npm install
 
     - name: Bundle assets .js and .css
-      run: npm run build
+      run: VUE_APP_API=https://fintech-backend.herokuapp.com npm run build
 
     - name: Commit files
       run: |
@@ -53,8 +48,12 @@ jobs:
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "ci(dist): Automated bundle deploy" -a
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
     - name: Push changes
       uses: ad-m/github-push-action@v0.5.0
       with:
-        branch: master
+        branch: ${{ steps.extract_branch.outputs.branch }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
