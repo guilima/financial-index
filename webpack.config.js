@@ -13,7 +13,7 @@ module.exports = (_, argv) => ({
   entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: argv.mode === 'production' ? '[name].[hash].js' : '[name].js'
+    filename: argv.mode === 'production' ? '[name].[contenthash].js' : '[name].js'
   },
   optimization: {
     minimizer: [new TerserJSPlugin({extractComments: false}), new OptimizeCSSAssetsPlugin({})],
@@ -65,9 +65,7 @@ module.exports = (_, argv) => ({
     publicPath: '/dist/'
   },
   plugins: [
-    argv.mode !== 'production' ?
-    new Dotenv() :
-    new webpack.EnvironmentPlugin(['VUE_APP_API']),
+    new Dotenv({systemvars: argv.mode === 'production'}),
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -78,8 +76,8 @@ module.exports = (_, argv) => ({
     }),
     new HtmlWebpackHarddiskPlugin(),
     new MiniCssExtractPlugin({
-      filename: argv.mode !== 'production' ? '[name].css' : '[name].[hash].css',
-      chunkFilename: argv.mode !== 'production' ? '[id].css' : '[id].[hash].css'
+      filename: argv.mode !== 'production' ? '[name].css' : '[name].[contenthash].css',
+      chunkFilename: argv.mode !== 'production' ? '[id].css' : '[id].[contenthash].css'
     })
   ]
 });
