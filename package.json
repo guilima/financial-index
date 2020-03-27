@@ -8,7 +8,7 @@
     "url": "https://github.com/guilima/financials-index.git"
   },
   "scripts": {
-    "build": "webpack --mode=production --hide-modules",
+    "build": "VUE_APP_API=https://fintech-backend.herokuapp.com webpack --mode=production --hide-modules",
     "start": "webpack-dev-server --mode=development --progress --colors --hot"
   },
   "dependencies": {
