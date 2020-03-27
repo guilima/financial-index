@@ -1,17 +1,32 @@
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-var proxyURL = 'http://local.financial.indexs'; // Your external HTML server
-var proxy = {
-  '*': { target: proxyURL }
-};
-
-module.exports = {
+module.exports = (_, argv) => ({
   entry: './src/app.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
-    filename: 'app.bundle.js'
+    path: path.resolve(__dirname, 'dist'),
+    filename: argv.mode === 'production' ? '[name].[hash].js' : '[name].js'
+  },
+  optimization: {
+    minimizer: [new TerserJSPlugin({extractComments: false}), new OptimizeCSSAssetsPlugin({})],
+    moduleIds: 'hashed',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -20,9 +35,18 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            'scss': 'vue-style-loader!css-loader!sass-loader'
+            scss: 'vue-style-loader!css-loader!sass-loader'
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          argv.mode === 'production' ?
+          MiniCssExtractPlugin.loader :
+          'vue-style-loader',
+          'css-loader'
+        ]
       },
       {
         test: /\.js$/,
@@ -36,11 +60,26 @@ module.exports = {
     alias: { vue: 'vue/dist/vue.esm.js' }
   },
   devServer: {
-    host: 'local.financial.index',
-    port: 8082
+    host: 'localhost',
+    port: 8082,
+    publicPath: '/dist/'
   },
-  devtool: process.env.NODE_ENV === 'product' ? 'source-map' : 'eval-source-map',
   plugins: [
-    new webpack.NamedModulesPlugin()
+    argv.mode !== 'production' ?
+    new Dotenv() :
+    new webpack.EnvironmentPlugin(['VUE_APP_API']),
+    new VueLoaderPlugin(),
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './index.ejs',
+      title: 'Indíces de valores financiais',
+      filename: '../index.html',
+      alwaysWriteToDisk: true
+    }),
+    new HtmlWebpackHarddiskPlugin(),
+    new MiniCssExtractPlugin({
+      filename: argv.mode !== 'production' ? '[name].css' : '[name].[hash].css',
+      chunkFilename: argv.mode !== 'production' ? '[id].css' : '[id].[hash].css'
+    })
   ]
-};
+});

@@ -6,9 +6,9 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [ release/connection ]
+    branches: [ master ]
   pull_request:
-    branches: [ release/connection ]
+    branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,16 +19,42 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - uses: webfactory/ssh-agent@v0.2.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
     # Environmnet variables
     - name: Environmnet variables
-      run: echo Set environment variables $VUE_APP_API
+      run: echo Set environment variables $VUE_APP_API not working with dotenv-webpack, using .env
       env:
         VUE_APP_API: https://fintech-backend.herokuapp.com
-    
+        cache-name: cache-node-modules
+
     # Runs a single command using the runners shell
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+    - name: Install npm dependencies
+      run: npm install
+
     - name: Bundle assets .js and .css
-    - run: npm install
-    - run: npm run build
+      run: npm run build
+
+    - name: Commit files
+      run: |
+        echo ${{ github.ref }}
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "ci(dist): Automated bundle deploy" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.5.0
+      with:
+        branch: master
+        github_token: ${{ secrets.GITHUB_TOKEN }}
